@@ -10,44 +10,65 @@ function agregarAlCarrito(codigo, descripcion, precio) {
     carrito.push({ codigo, descripcion, precio, cantidad: 1 });
   }
   alert("Producto agregado al carrito");
+  guardarCarritoEnLocalStorage();
+}
+
+// Función para mostrar los productos en el carrito
+function mostrarCarrito() {
+  const tablaCarrito = document.querySelector("#tabla-carrito tbody");
+  tablaCarrito.innerHTML = ""; // Limpiar la tabla
+  carrito.forEach((producto, index) => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${producto.codigo}</td>
+      <td>${producto.descripcion}</td>
+      <td>Q${producto.precio}</td>
+      <td>${producto.cantidad}</td>
+      <td><button onclick="eliminarProducto(${index})">Eliminar</button></td>
+    `;
+    tablaCarrito.appendChild(fila);
+  });
+}
+
+// Función para eliminar un producto del carrito
+function eliminarProducto(index) {
+  carrito.splice(index, 1); // Eliminar el producto del array
+  guardarCarritoEnLocalStorage();
   mostrarCarrito();
 }
 
-// Función para mostrar el carrito (puedes integrarla a otra página si lo necesitas)
-function mostrarCarrito() {
-  console.log("Carrito actual:", carrito);
+// Guardar el carrito en localStorage
+function guardarCarritoEnLocalStorage() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// Función para generar un PDF con los datos del cliente y los productos
-function generarPDF() {
-  const cliente = {
-    nombre: document.getElementById("nombre").value,
-    apellido: document.getElementById("apellido").value,
-    direccion: document.getElementById("direccion").value,
-    telefono: document.getElementById("telefono").value,
-    correo: document.getElementById("correo").value,
-  };
+// Cargar el carrito desde localStorage
+function cargarCarritoDeLocalStorage() {
+  const carritoGuardado = localStorage.getItem("carrito");
+  if (carritoGuardado) {
+    carrito = JSON.parse(carritoGuardado);
+  }
+}
 
-  let contenido = `
-    Pedido Número: ${Math.floor(Math.random() * 100000)}
-    Fecha: ${new Date().toLocaleDateString()}
-    
-    Cliente:
-    Nombre: ${cliente.nombre} ${cliente.apellido}
-    Dirección: ${cliente.direccion}
-    Teléfono: ${cliente.telefono}
-    Correo: ${cliente.correo}
-    
-    Productos:
-  `;
+// Función para generar un PDF
+function generarPDF() {
+  const doc = new jsPDF();
+  let contenido = "Carrito de Pedidos\n\n";
+  contenido += "Fecha: " + new Date().toLocaleDateString() + "\n\n";
+  contenido += "Productos:\n";
+
   carrito.forEach(producto => {
     contenido += `${producto.cantidad}x ${producto.descripcion} (Q${producto.precio})\n`;
   });
 
-  contenido += `\nGracias por tu pedido.`;
-
-  // Crear PDF con jsPDF (https://parall.ax/products/jspdf)
-  const doc = new jsPDF();
+  contenido += "\nGracias por tu pedido.";
   doc.text(contenido, 10, 10);
   doc.save("pedido.pdf");
 }
+
+// Inicializar la página
+cargarCarritoDeLocalStorage();
+if (window.location.pathname.includes("carrito.html")) {
+  mostrarCarrito();
+}
+
