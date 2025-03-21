@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Pedidos</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="carrito.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Carrito de Pedidos</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="ropa.html">Para Ropa</a>
+      <a href="cocina.html">Para Cocina</a>
+      <a href="mecanica.html">Para Mecánica</a>
+      <a href="implementos.html">Implementos</a>
+    </nav>
+  </header>
+  <main>
+    <section id="lista-carrito">
+      <h2>Productos Seleccionados</h2>
+      <table id="tabla-carrito">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Precio (Q)</th>
+            <th>Cantidad</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Los productos serán añadidos dinámicamente con JavaScript -->
+        </tbody>
+      </table>
+    </section>
+    <button onclick="generarPDF()">Generar PDF</button>
+  </main>
+  <footer>
+    <p>Contáctanos: info@catalogo.com | WhatsApp: +502 1234-5678</p>
+  </footer>
+</body>
+</html>
