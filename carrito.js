@@ -1,74 +1,43 @@
-// Array para guardar los productos seleccionados
-let carrito = [];
-
-// Función para agregar productos al carrito
-function agregarAlCarrito(codigo, descripcion, precio) {
-  const productoExistente = carrito.find(producto => producto.codigo === codigo);
-  if (productoExistente) {
-    productoExistente.cantidad++;
-  } else {
-    carrito.push({ codigo, descripcion, precio, cantidad: 1 });
-  }
-  alert("Producto agregado al carrito");
-  guardarCarritoEnLocalStorage();
-}
-
-// Función para mostrar los productos en el carrito
-function mostrarCarrito() {
-  const tablaCarrito = document.querySelector("#tabla-carrito tbody");
-  tablaCarrito.innerHTML = ""; // Limpiar la tabla
-  carrito.forEach((producto, index) => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${producto.codigo}</td>
-      <td>${producto.descripcion}</td>
-      <td>Q${producto.precio}</td>
-      <td>${producto.cantidad}</td>
-      <td><button onclick="eliminarProducto(${index})">Eliminar</button></td>
-    `;
-    tablaCarrito.appendChild(fila);
-  });
-}
-
-// Función para eliminar un producto del carrito
-function eliminarProducto(index) {
-  carrito.splice(index, 1); // Eliminar el producto del array
-  guardarCarritoEnLocalStorage();
-  mostrarCarrito();
-}
-
-// Guardar el carrito en localStorage
-function guardarCarritoEnLocalStorage() {
-  localStorage.setItem("carrito", JSON.stringify(carrito));
-}
-
-// Cargar el carrito desde localStorage
-function cargarCarritoDeLocalStorage() {
-  const carritoGuardado = localStorage.getItem("carrito");
-  if (carritoGuardado) {
-    carrito = JSON.parse(carritoGuardado);
-  }
-}
-
 // Función para generar un PDF
 function generarPDF() {
-  const doc = new jsPDF();
-  let contenido = "Carrito de Pedidos\n\n";
-  contenido += "Fecha: " + new Date().toLocaleDateString() + "\n\n";
-  contenido += "Productos:\n";
+  const cliente = {
+    nombre: document.getElementById("nombre").value,
+    direccion: document.getElementById("direccion").value,
+    referencia: document.getElementById("referencia").value,
+    telefono: document.getElementById("telefono").value,
+  };
 
-  carrito.forEach(producto => {
-    contenido += `${producto.cantidad}x ${producto.descripcion} (Q${producto.precio})\n`;
+  if (!cliente.nombre || !cliente.direccion || !cliente.telefono) {
+    alert("Por favor, completa toda la información del cliente.");
+    return;
+  }
+
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: [80, 297], // Formato angosto
   });
 
-  contenido += "\nGracias por tu pedido.";
-  doc.text(contenido, 10, 10);
-  doc.save("pedido.pdf");
-}
+  let y = 10; // Coordenada inicial en el PDF
 
-// Inicializar la página
-cargarCarritoDeLocalStorage();
-if (window.location.pathname.includes("carrito.html")) {
-  mostrarCarrito();
+  doc.setFontSize(12);
+  doc.text("Carrito de Pedidos", 10, y); y += 10;
+  doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, y); y += 10;
+  doc.text("Información del Cliente:", 10, y); y += 10;
+  doc.text(`Nombre: ${cliente.nombre}`, 10, y); y += 10;
+  doc.text(`Dirección: ${cliente.direccion}`, 10, y); y += 10;
+  doc.text(`Referencia: ${cliente.referencia}`, 10, y); y += 10;
+  doc.text(`Teléfono: ${cliente.telefono}`, 10, y); y += 20;
+
+  doc.text("Productos Seleccionados:", 10, y); y += 10;
+
+  carrito.forEach(producto => {
+    doc.text(`${producto.cantidad}x ${producto.descripcion} (Q${producto.precio})`, 10, y);
+    y += 10;
+  });
+
+  doc.text("Gracias por tu pedido.", 10, y + 10);
+
+  doc.save("pedido.pdf");
 }
 
