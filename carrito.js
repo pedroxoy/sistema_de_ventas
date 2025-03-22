@@ -1,3 +1,66 @@
+// Array para almacenar los productos seleccionados
+let carrito = [];
+
+// Función para agregar productos al carrito
+function agregarAlCarrito(codigo, descripcion, precio) {
+  const productoExistente = carrito.find(producto => producto.codigo === codigo);
+  if (productoExistente) {
+    productoExistente.cantidad++;
+  } else {
+    carrito.push({ codigo, descripcion, precio, cantidad: 1 });
+  }
+  alert("Producto agregado al carrito");
+  guardarCarritoEnLocalStorage();
+}
+
+// Función para guardar el carrito en localStorage
+function guardarCarritoEnLocalStorage() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+// Función para cargar el carrito desde localStorage al iniciar
+function cargarCarritoDeLocalStorage() {
+  const carritoGuardado = localStorage.getItem("carrito");
+  if (carritoGuardado) {
+    carrito = JSON.parse(carritoGuardado);
+  }
+}
+
+// Función para mostrar los productos en la tabla del carrito
+function mostrarCarrito() {
+  const tablaCarrito = document.querySelector("#tabla-carrito tbody");
+  tablaCarrito.innerHTML = ""; // Limpiar la tabla
+
+  carrito.forEach((producto, index) => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${producto.codigo}</td>
+      <td>${producto.descripcion}</td>
+      <td>Q${producto.precio.toFixed(2)}</td>
+      <td>${producto.cantidad}</td>
+      <td>
+        <button onclick="aumentarCantidad(${index})">+</button>
+        <button onclick="eliminarProducto(${index})">Eliminar</button>
+      </td>
+    `;
+    tablaCarrito.appendChild(fila);
+  });
+}
+
+// Función para aumentar la cantidad de un producto
+function aumentarCantidad(index) {
+  carrito[index].cantidad++;
+  guardarCarritoEnLocalStorage();
+  mostrarCarrito();
+}
+
+// Función para eliminar un producto del carrito
+function eliminarProducto(index) {
+  carrito.splice(index, 1);
+  guardarCarritoEnLocalStorage();
+  mostrarCarrito();
+}
+
 // Función para generar un PDF
 function generarPDF() {
   const cliente = {
@@ -39,5 +102,11 @@ function generarPDF() {
   doc.text("Gracias por tu pedido.", 10, y + 10);
 
   doc.save("pedido.pdf");
+}
+
+// Inicialización: cargar datos al iniciar la página
+cargarCarritoDeLocalStorage();
+if (document.querySelector("#tabla-carrito")) {
+  mostrarCarrito();
 }
 
