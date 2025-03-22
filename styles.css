@@ -26,6 +26,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   height: 100vh; /* Altura completa de la ventana */
 }
 
@@ -47,4 +48,81 @@ footer {
 
 .botones-categorias a:hover {
   background-color: #555;
+}
+
+/* Contenedor principal centrado */
+#carrito-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Diseño estilo factura */
+.factura-rec {
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px; /* Tamaño máximo para centrado */
+  margin: 0 auto;
+}
+
+/* Tabla de productos */
+#tabla-carrito {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+#tabla-carrito th, #tabla-carrito td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+#tabla-carrito th {
+  background-color: #333;
+  color: white;
+}
+
+button {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+/* Contenedor para la información del cliente */
+#cliente-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#form-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#form-cliente label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#form-cliente input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
