@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingresos y Egresos</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>💰 Ingresos y Egresos</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">🏠 Inicio</a></li>
+        <li><a href="productos.html">📦 Productos</a></li>
+        <li><a href="ventas.html">🧾 Ventas</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Registrar Movimiento</h2>
+      <form id="form-movimiento">
+        <label>Tipo:</label>
+        <select id="tipo" required>
+          <option value="ingreso">Ingreso</option>
+          <option value="egreso">Egreso</option>
+        </select>
+
+        <label>Monto:</label>
+        <input type="number" id="monto" min="0" required>
+
+        <label>Descripción:</label>
+        <input type="text" id="descripcion" required>
+
+        <button type="submit">Registrar</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Historial de Movimientos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-movimientos">
+          <!-- Movimientos cargados dinámicamente -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Sistema de Ventas | Movimientos</p>
+  </footer>
+</body>
+</html>
