@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cotización de Pintura</title>
+  <title>Cotización</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     table { border-collapse: collapse; width: 100%; margin-top: 20px; }
@@ -13,14 +13,14 @@
   </style>
 </head>
 <body>
-  <h2>Cotización de Pintura</h2>
+  <h2>Cotización</h2>
   <table id="cotizacion">
     <thead>
       <tr>
-        <th>Área / Trabajo</th>
+        <th>Área / Producto</th>
         <th>Unidad</th>
         <th>Cantidad</th>
-        <th>Precio por unidad</th>
+        <th>Precio</th>
         <th>Subtotal</th>
       </tr>
     </thead>
@@ -29,20 +29,15 @@
         <td><input type="text" placeholder="Ej. Pared frontal"></td>
         <td>
           <select>
+            <option value="m2">m²</option>
+            <option value="ml">ml</option>
+            <option value="yd2">yd²</option>
+            <option value="yd">yd</option>
+            <option value="ft2">ft²</option>
+            <option value="ft">ft</option>
             <option value="pieza">pieza</option>
             <option value="caja">caja</option>
-            <option value="paquete">paquete</option>
             <option value="unidad">unidad</option>
-            <option value="m2">m² (metros cuadrados)</option>
-            <option value="ml">ml (metros lineales)</option>
-            <option value="yd2">yd² (yardas cuadradas)</option>
-            <option value="yd">yd (yardas lineales)</option>
-            <option value="ft2">ft² (pies cuadrados)</option>
-            <option value="ft">ft (pies lineales)</option>
-            <option value="cm2">cm² (centímetros cuadrados)</option>
-            <option value="in2">in² (pulgadas cuadradas)</option>
-            <option value="m3">m³ (metros cúbicos)</option>
-            <option value="l">L (litros)</option>
           </select>
         </td>
         <td><input type="number" value="0"></td>
@@ -55,8 +50,9 @@
   <button onclick="descargarPDF()">Descargar PDF</button>
   <h3>Total: Q<span id="total">0</span></h3>
 
-  <!-- Librería jsPDF desde CDN -->
+  <!-- Librerías jsPDF y autoTable -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <script>
     function calcular() {
@@ -86,27 +82,32 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      doc.setFontSize(14);
-      doc.text("Cotización de Pintura", 10, 10);
+      doc.setFontSize(16);
+      doc.text("Cotización", 14, 20);
 
       let filas = document.querySelectorAll("#cotizacion tbody tr");
-      let y = 30;
+      let data = [];
       filas.forEach(fila => {
         let area = fila.cells[0].querySelector("input").value || "-";
         let unidad = fila.cells[1].querySelector("select").value;
         let cantidad = fila.cells[2].querySelector("input").value || "0";
         let precio = fila.cells[3].querySelector("input").value || "0";
         let subtotal = fila.querySelector(".subtotal").textContent;
+        data.push([area, unidad, cantidad, "Q" + precio, "Q" + subtotal]);
+      });
 
-        doc.text(`${area} | ${unidad} | Cant: ${cantidad} | Precio: Q${precio} | Subtotal: Q${subtotal}`, 10, y);
-        y += 10;
+      doc.autoTable({
+        head: [["Concepto", "Unidad", "Cantidad", "Precio", "Subtotal"]],
+        body: data,
+        startY: 30,
       });
 
       let total = document.getElementById("total").textContent;
-      doc.text(`TOTAL: Q${total}`, 10, y + 10);
+      doc.text(`TOTAL: Q${total}`, 14, doc.lastAutoTable.finalY + 10);
 
       doc.save("cotizacion.pdf");
     }
   </script>
 </body>
 </html>
+
